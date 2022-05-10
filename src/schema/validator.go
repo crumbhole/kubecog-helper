@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"errors"
 	"github.com/go-playground/validator/v10"
 	"reflect"
 	"strings"
@@ -95,4 +96,14 @@ func ValidateToStrings(values CogValues) []string {
 // line breaked string. 0 length text indicates no failures
 func ValidateToSingleString(values CogValues) string {
 	return strings.Join(ValidateToStrings(values), "\n")
+}
+
+// ValidateToError returns all failures as a user presentable error
+// or nil if no errors
+func ValidateToError(values CogValues) error {
+	errorString := strings.Join(ValidateToStrings(values), "\n")
+	if len(errorString) > 0 {
+		return errors.New(errorString)
+	}
+	return nil
 }

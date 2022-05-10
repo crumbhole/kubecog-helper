@@ -55,6 +55,20 @@ func TestEmpty(t *testing.T) {
 	ensureAllErrors(t, received, expectedErrors)
 }
 
+func TestErrorExist(t *testing.T) {
+	err := ValidateToError(CogValues{})
+	if err == nil {
+		t.Errorf("ValidateToError returned nil when it should have errors")
+	}
+}
+
+func TestErrorNil(t *testing.T) {
+	err := ValidateToError(CogValues{Platform: Platform{Provider: "rke"}, ArgoCD: ArgoCD{HA: true}})
+	if err != nil {
+		t.Errorf("ValidateToError returned non nil when it should be good")
+	}
+}
+
 type failTest struct {
 	values CogValues
 	expect expectedErrors
