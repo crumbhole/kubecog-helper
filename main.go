@@ -2,14 +2,15 @@ package main
 
 import (
 	"bufio"
+	"github.com/crumbhole/kubecog-helper/src/schema"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 )
 
-func loadValues(contents []byte) (CogValues, error) {
-	var values CogValues
+func loadValues(contents []byte) (schema.CogValues, error) {
+	var values schema.CogValues
 	err := yaml.Unmarshal(contents, &values)
 	return values, err
 }
@@ -26,7 +27,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		v := kubecogValidator{}
+		v := schema.KubecogValidator{}
 		print(v.ValidateToSingleString(values))
 	} else {
 		log.Fatal("Please pipe in a cogvalues.yaml")

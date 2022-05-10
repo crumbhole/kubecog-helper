@@ -1,4 +1,4 @@
-package main
+package schema
 
 import (
 	"github.com/go-playground/validator/v10"
@@ -24,14 +24,16 @@ type validationError struct {
 	errorMsg        string
 }
 
-type kubecogValidator struct {
+// KubecogValidator is a struct to hold things we don't want to recreate
+// between validations
+type KubecogValidator struct {
 	validate    *validator.Validate
 	uni         *ut.UniversalTranslator
 	trans       *ut.Translator
 	initialised bool
 }
 
-func (v *kubecogValidator) init() {
+func (v *KubecogValidator) init() {
 	if !v.initialised {
 		v.validate = validator.New()
 		en := en.New()
@@ -43,7 +45,7 @@ func (v *kubecogValidator) init() {
 	}
 }
 
-func (v *kubecogValidator) doValidation(values CogValues) []validationError {
+func (v *KubecogValidator) doValidation(values CogValues) []validationError {
 	v.init()
 	var errors []validationError
 	err := v.validate.Struct(values)
@@ -74,13 +76,13 @@ func (v *kubecogValidator) doValidation(values CogValues) []validationError {
 	return errors
 }
 
-func (*kubecogValidator) errorString(err validationError) string {
+func (*KubecogValidator) errorString(err validationError) string {
 	return err.namespace + ": " + err.errorMsg
 }
 
 // ValidateToStrings returns all failures as user presentable text
 // in an array. 0 length array indicates no failures
-func (v *kubecogValidator) ValidateToStrings(values CogValues) []string {
+func (v *KubecogValidator) ValidateToStrings(values CogValues) []string {
 	errors := v.doValidation(values)
 	var out []string
 	for _, err := range errors {
@@ -91,6 +93,6 @@ func (v *kubecogValidator) ValidateToStrings(values CogValues) []string {
 
 // ValidateToStrings returns all failures as user presentable single
 // line breaked string. 0 length text indicates no failures
-func (v *kubecogValidator) ValidateToSingleString(values CogValues) string {
+func (v *KubecogValidator) ValidateToSingleString(values CogValues) string {
 	return strings.Join(v.ValidateToStrings(values), "\n")
 }

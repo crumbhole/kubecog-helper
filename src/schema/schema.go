@@ -1,4 +1,4 @@
-package main
+package schema
 
 // CogValues is the top level structure for cogvalues.yaml as used by
 // cog-plugin. Add json: and validate: tags as appropriate for validation.
