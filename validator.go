@@ -74,10 +74,12 @@ func (v *kubecogValidator) doValidation(values CogValues) []validationError {
 	return errors
 }
 
-func (_ *kubecogValidator) errorString(err validationError) string {
+func (*kubecogValidator) errorString(err validationError) string {
 	return err.namespace + ": " + err.errorMsg
 }
 
+// ValidateToStrings returns all failures as user presentable text
+// in an array. 0 length array indicates no failures
 func (v *kubecogValidator) ValidateToStrings(values CogValues) []string {
 	errors := v.doValidation(values)
 	var out []string
@@ -87,6 +89,8 @@ func (v *kubecogValidator) ValidateToStrings(values CogValues) []string {
 	return out
 }
 
+// ValidateToStrings returns all failures as user presentable single
+// line breaked string. 0 length text indicates no failures
 func (v *kubecogValidator) ValidateToSingleString(values CogValues) string {
 	return strings.Join(v.ValidateToStrings(values), "\n")
 }
