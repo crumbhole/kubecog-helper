@@ -26,29 +26,29 @@ type validationError struct {
 
 // KubecogValidator is a struct to hold things we don't want to recreate
 // between validations
-type KubecogValidator struct {
+var (
 	validate    *validator.Validate
 	uni         *ut.UniversalTranslator
 	trans       *ut.Translator
 	initialised bool
-}
+)
 
-func (v *KubecogValidator) init() {
-	if !v.initialised {
-		v.validate = validator.New()
+func prepare() {
+	if !initialised {
+		validate = validator.New()
 		en := en.New()
-		v.uni = ut.New(en, en)
-		trans, _ := v.uni.GetTranslator(`en`)
-		v.trans = &trans
-		en_translations.RegisterDefaultTranslations(v.validate, *v.trans)
-		v.initialised = true
+		uni = ut.New(en, en)
+		ltrans, _ := uni.GetTranslator(`en`)
+		trans = &ltrans
+		en_translations.RegisterDefaultTranslations(validate, *trans)
+		initialised = true
 	}
 }
 
-func (v *KubecogValidator) doValidation(values CogValues) []validationError {
-	v.init()
+func doValidation(values CogValues) []validationError {
+	prepare()
 	var errors []validationError
-	err := v.validate.Struct(values)
+	err := validate.Struct(values)
 	if err != nil {
 		// // this check is only needed when your code could produce
 		// // an invalid value for validation such as interface with nil
@@ -69,30 +69,30 @@ func (v *KubecogValidator) doValidation(values CogValues) []validationError {
 			e.param = err.Param()
 			e.fieldKind = err.Kind()
 			e.fieldType = err.Type()
-			e.errorMsg = err.Translate(*v.trans)
+			e.errorMsg = err.Translate(*trans)
 			errors = append(errors, e)
 		}
 	}
 	return errors
 }
 
-func (*KubecogValidator) errorString(err validationError) string {
+func errorString(err validationError) string {
 	return err.namespace + ": " + err.errorMsg
 }
 
 // ValidateToStrings returns all failures as user presentable text
 // in an array. 0 length array indicates no failures
-func (v *KubecogValidator) ValidateToStrings(values CogValues) []string {
-	errors := v.doValidation(values)
+func ValidateToStrings(values CogValues) []string {
+	errors := doValidation(values)
 	var out []string
 	for _, err := range errors {
-		out = append(out, v.errorString(err))
+		out = append(out, errorString(err))
 	}
 	return out
 }
 
 // ValidateToStrings returns all failures as user presentable single
 // line breaked string. 0 length text indicates no failures
-func (v *KubecogValidator) ValidateToSingleString(values CogValues) string {
-	return strings.Join(v.ValidateToStrings(values), "\n")
+func ValidateToSingleString(values CogValues) string {
+	return strings.Join(ValidateToStrings(values), "\n")
 }

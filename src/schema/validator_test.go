@@ -11,10 +11,9 @@ func TestValid(t *testing.T) {
 		{ArgoCD: ArgoCD{HA: false},
 			Platform: Platform{Provider: "aks"}},
 	}
-	v := KubecogValidator{}
 	for i, val := range vals {
 		t.Logf("Valid test %d\n", i)
-		errorString := v.ValidateToSingleString(val)
+		errorString := ValidateToSingleString(val)
 		if errorString != "" {
 			t.Error(errorString)
 		}
@@ -52,8 +51,7 @@ func ensureAllErrors(t *testing.T, received []string, expected expectedErrors) {
 
 func TestEmpty(t *testing.T) {
 	expectedErrors := expectedErrors{`CogValues.Platform.Provider: Provider is a required field`}
-	v := KubecogValidator{}
-	received := v.ValidateToStrings(CogValues{})
+	received := ValidateToStrings(CogValues{})
 	ensureAllErrors(t, received, expectedErrors)
 }
 
@@ -66,10 +64,9 @@ func TestFailing(t *testing.T) {
 	tests := []failTest{{CogValues{Platform: Platform{Provider: "poo"}},
 		expectedErrors{`CogValues.Platform.Provider: Provider must be one of [rke k3s aks eks]`},
 	}}
-	v := KubecogValidator{}
 	for i, val := range tests {
 		t.Logf("Failing test %d\n", i)
-		received := v.ValidateToStrings(val.values)
+		received := ValidateToStrings(val.values)
 		ensureAllErrors(t, received, val.expect)
 	}
 }

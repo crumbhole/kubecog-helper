@@ -27,8 +27,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		v := schema.KubecogValidator{}
-		print(v.ValidateToSingleString(values))
+		print(schema.ValidateToSingleString(values))
 	} else {
 		log.Fatal("Please pipe in a cogvalues.yaml")
 	}
