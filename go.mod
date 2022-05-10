@@ -1,4 +1,4 @@
-module github.com/crumbhole/cog-helper
+module github.com/crumbhole/kubecog-helper
 
 go 1.18
 

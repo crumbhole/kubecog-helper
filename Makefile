@@ -2,7 +2,7 @@
 
 DEPS := $(shell find . -type f -name "*.go" -printf "%p ")
 
-all: code-vet code-fmt test build/cog-helper
+all: code-vet code-fmt test build/kubecog-helper
 
 clean:
 	$(RM) -rf build
@@ -16,7 +16,7 @@ test: get
 test_verbose: get
 	go test -v ./...
 
-build/cog-helper: $(DEPS)
+build/kubecog-helper: $(DEPS)
 	mkdir -p build
 	go build -o build ./...
 
