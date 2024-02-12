@@ -1,4 +1,4 @@
-FROM golang:1.21.5 as builder
+FROM golang:1.22.0 as builder
 ADD . /build
 WORKDIR /build
 RUN make -j4
